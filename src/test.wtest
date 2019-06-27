@@ -1,0 +1,96 @@
+import semillas.*
+describe "plantas"{
+	
+  const menta= new Menta(anioDeObtencion=2009,altura=0.3)
+  const soja=  new Soja(anioDeObtencion=2009,altura=0.6)
+  const quinoa=new Quinoa(anioDeObtencion=2010,altura=1,horasDeSolQueTolera=12)
+  const hierbaBuena= new HierbaBuena()
+  const sojaTransgenica=new SojaTransgenica()
+  const quinoaDebil= new Quinoa(anioDeObtencion=2008,altura=1,horasDeSolQueTolera=3)
+
+  const parcela1= new Parcela(ancho=20,largo=1,horasDeSol=8,plantas=[quinoa],tipoDeParcela="ecologica")
+  const parcela2=new Parcela(ancho=20,largo=1,horasDeSol=8,plantas=[quinoa],tipoDeParcela="industrial")
+  const parcela3= new Parcela(ancho=20,largo=1,horasDeSol=8,plantas=[quinoa,soja,menta,hierbaBuena,menta],tipoDeParcela="ecologica")
+  const parcela4=new Parcela(ancho=20,largo=2,horasDeSol=8,plantas=[quinoa,soja],tipoDeParcela="industrial")
+   fixture{
+	inta.agregarParcela(parcela3)
+	inta.agregarParcela(parcela4)
+}
+
+
+test "menta no da semillas " {
+	assert.notThat(menta.daNuevasSemillas())
+}
+test "menta no es fuerte"{
+	assert.notThat(menta.esFuerte())
+}
+test "menta ocupa 0.9"{
+	assert.equals(0.9==menta.espacioQueOcupa())
+}
+test" parcela1 es ideal para la menta"{
+	assert.that(menta.parcelaEsIdeal(parcela1))
+}
+test"soja tolera 7 horas de sol"{
+	assert.equals(7==soja.horasDeSolQueTolera())
+}
+test "la soja no da semillas"{
+	assert.notThat(soja.daNuevasSemillas())
+}
+test "la soja ocupa 0.3"{
+	assert.equals(0.3==soja.espacioQueOcupa())
+}
+test"quinoa da semillas"{
+	assert.that(quinoa.daNuevasSemillas())
+}
+test"hierbaBuena ocupa 1,8 "{
+	assert.equals(1.8==hierbaBuena.espacioQueOcupa())
+}
+test" parcela 4 soporta 8 plantas"{
+	assert.equals(8==parcela4.maximoDePlantas())
+}
+test"parcela1 tiene una sup de 20 m2"{
+	assert.equals(20==parcela1.superficie())
+}
+test"parcela 1 cantidad maxima de plantas que tolera es 4"{
+	assert.equals(4==parcela1.maximoDePlantas())
+}
+test"parcela tiene no puede plantar quinoaDebil"{
+	assert.throwsExceptionWithMessage("ya esta con el maximo de plantas o recibe demasiado sol",{parcela1.plantarUnaPlanta(quinoaDebil)})
+}
+test"parcela1 no tiene complicaciones "{
+	assert.notThat(parcela1.tieneComplicaciones())
+}
+test"soja no es ideal para la parcela1"{
+	assert.notThat(soja.parcelaEsIdeal(parcela1))
+}
+test "quinoa es ideal para parcela 1"{
+	assert.that(quinoa.parcelaEsIdeal(parcela1))
+}
+test"soja transgenica no es ideal para la parcela 1"{
+	assert.notThat(sojaTransgenica.parcelaEsIdeal(parcela1))
+}
+test "quinoa sea asocia bien a parcela1"{
+	assert.that(parcela1.seAsociaBienAca(quinoa))
+}
+test "quinoadebil  no se asocia bien a parcela 2 porque es industrial "{
+	assert.notThat(parcela2.seAsociaBienAca(quinoaDebil))
+}
+test "soja no se asocia bien a parcela1"{
+	assert.notThat(parcela1.seAsociaBienAca(soja))
+}
+test "se agrega parcela1 a las parcelas del inta"{
+	
+	assert.equals([parcela3,parcela4],inta.parcelas())
+}
+test "promedio de plantas por parcela"{
+	assert.equals(3.5==inta.promedioDePlantasPorParcela())
+}
+test "parcela mas autosustentable"{
+	assert.equals(parcela4==inta.parcelaMasAutosustentable())
+}
+}
+
+
+
+
+
